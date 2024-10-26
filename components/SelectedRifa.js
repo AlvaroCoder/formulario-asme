@@ -1,16 +1,16 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import React, { useState } from 'react'
-import Constants from "expo-constants"
 export default function SelectedRifa({navigation, route}) {
     const number_ticket_database = 3072;
     const [listTickets, setListTickets] = useState([
         {number : String(number_ticket_database) }
     ]);
-    const [showFormLink, setShowFormLink] = useState(false);
-
     const handleChangeInputRifas=(text)=>{
         const list_tickets =Array.from({length : text}).map((_, idx)=>({number : number_ticket_database+idx+1}))
         setListTickets(list_tickets);
+    }
+    const handleClickShowForm=()=>{
+        navigation.navigate("RifaSuccess", { listTickets })
     }
   return (
     <View style={styles.container}>
@@ -31,7 +31,7 @@ export default function SelectedRifa({navigation, route}) {
                 listTickets.length > 0?
                 <View style={{}}>
                     {
-                        listTickets.map((item, key)=>(<Text key={key}>N {item.number}</Text>))
+                        listTickets.map((item, key)=>(<Text key={key}>Nro {item.number}</Text>))
                     }
                 </View>:
                 <View style={{}}>
@@ -45,7 +45,7 @@ export default function SelectedRifa({navigation, route}) {
                 <Text style={{textAlign : 'center'}}>No hay formulario para mostrar</Text>
             </View>
         </View>
-        <TouchableOpacity style={styles.style_button}>
+        <TouchableOpacity style={styles.style_button} onPress={handleClickShowForm}>
             <Text style={{textAlign : 'center', fontWeight :'bold', color : '#FFFF'}}>Generar Formulario</Text>
         </TouchableOpacity>
         <View style={styles.style_footer}>
