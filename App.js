@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, Login } from './components';
+import { Home, Login, SelectedRifa } from './components';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,7 +10,6 @@ export default function Page() {
     <NavigationContainer>
         <Stack.Navigator>
             <Stack.Screen
-                
                 name='Home'
                 component={Home}
                 options={{headerShown:false}}
@@ -19,7 +18,11 @@ export default function Page() {
                 name='Login'
                 component={Login}
             />    
-
+          <Stack.Screen
+              name='SelectedRifa'
+              component={SelectedRifa}
+              options={{title : "Rifa Seleccionada"}}
+          />
         </Stack.Navigator>
     </NavigationContainer>
   );
