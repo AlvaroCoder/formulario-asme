@@ -1,18 +1,31 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import React from 'react'
 import Constants from "expo-constants";
 export default function RifaSuccess({navigation, route}) {
     const URL_IMG_QR = "https://res.cloudinary.com/dabyqnijl/image/upload/v1729954834/yriza59n7fu2qtocynbh.png";
-    const handleClickReturn=()=>{
+    const handleClickReturnHome=()=>{
         navigation.navigate("Home");
+    }
+    const handleClickShareButton=async()=>{
+      try {
+        
+        
+      } catch (err) {
+        console.log('Error', err);
+        
+      }
     }
     return (
     <View style={styles.container}>
       <Text style={styles.style_title}>Rifas Vendidas</Text>
-      <View>
-        {
-            route?.params?.listTickets?.map((item, key)=><Text key={key}>Nro {item.number}</Text>)
-        }
+      <View style={{display:'flex', flexDirection:'row', alignItems :'center', height:60}}>
+        <ScrollView
+          horizontal
+        >
+          {
+              route?.params?.listTickets?.map((item, key)=><View key={key} style={{padding:10, borderRadius : 10, backgroundColor : "#095097", marginRight : 5}}><Text style={{color : "#FFF", fontWeight : 'bold'}} >Nro {item.number}</Text></View>)
+          }
+        </ScrollView>
       </View>
       <Text style={styles.style_title}>
         Formulario de Registro
@@ -26,10 +39,10 @@ export default function RifaSuccess({navigation, route}) {
             }}
         />
       </View>
-      <TouchableOpacity style={styles.style_button}>
+      <TouchableOpacity style={styles.style_button} onPress={handleClickShareButton}>
         <Text style={{color : "#FFFF", textAlign : 'center', fontWeight : 'bold'}}>Enviar a Whatsapp</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{width:"100%", paddingVertical : 10}} onPress={handleClickReturn}>
+      <TouchableOpacity style={{width:"100%", paddingVertical : 10}} onPress={handleClickReturnHome}>
         <Text style={{textAlign : 'center', color : "#095097", fontWeight : 'bold', fontSize : 15, textDecorationLine : 'underline'}}>Regresar al Inicio</Text>
       </TouchableOpacity>
       <View style={styles.style_footer}>

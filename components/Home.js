@@ -1,38 +1,53 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
-import React from 'react'
-import Constants from "expo-constants"
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../context/useAuthentication';
+import { getBookedTicketsHome, getRemainTicketsHome } from '../conexion/apiConexion';
 
 export default function Home({navigation}) {
-    const URL_IMAGEN_LOGO = "https://res.cloudinary.com/dabyqnijl/image/upload/v1729831966/agpocw2m8hcwpe8xufey.png";
-    const username= "Alvaro";
-    const categoryUser = "Finanzas";
+    const {userToken} = useContext(AuthContext);        
+    
+    const user=userToken && JSON.parse(userToken) ;
+    const [numBookedTickets, setNumBookedTickets] = useState(0);
+    const [numRemainTickets, setNumRemainTickets] = useState(0);
+
+    useEffect(()=>{
+        async function getDataHome() {
+            const responseBookedTickets = await getBookedTicketsHome(user?.id_user);
+            const responseBookedJSON = await responseBookedTickets.json();
+            setNumBookedTickets(responseBookedJSON?.tickets_data?.amount);
+            
+            const responseRemainTickets = await getRemainTicketsHome(user?.id_user);
+            const responseRemainJSON = await responseRemainTickets.json();
+            setNumRemainTickets(responseRemainJSON?.amount?.amount);
+            
+        }
+        getDataHome();
+    },[userToken])
+
     const tickets_pending=[];
+
     const handleClick =()=>{
-        navigation.navigate("SelectedRifa", {name : "Alvaro"})
+        navigation.navigate("SelectedRifa", {name : "Alvaro"});
+
     }
     return (
         <View style={styles.container} >
+            <View style={{display:'flex', flexDirection : 'column', marginTop : 15}} >
+                <Text style={{...styles.style_title, }}>Bienvenido {user?.first_name}</Text>
+                <Text style={{ fontWeight : 'bold', color : "#FFFF", backgroundColor : "#084F96", borderRadius : 12, padding:2, width:90, textAlign:'center'}}>{user?.area_name}</Text>
+            </View>
             <View>
-                <Image
-                    source={{
-                        uri : URL_IMAGEN_LOGO
-                    }}
-                    style={{width : 360, height : 80}}
-                />
+                <Text style={{fontWeight : 'bold', fontSize : 17, marginTop : 15}}>Información de Rifas</Text>
             </View>
-            <View style={{display:'flex', flexDirection : 'column', marginVertical : 20}} >
-                <Text style={{...styles.style_title, }}>Bienvenido {username}</Text>
-                <Text style={{ fontWeight : 'bold', color : "#FFFF", backgroundColor : "#084F96", borderRadius : 15, padding:5, width:100, textAlign:'center'}}>{categoryUser}</Text>
-            </View>
-            <View style={{...styles.style_container_box, marginTop : 20}} >
+            <View style={{...styles.style_container_box}} >
                 <View style={styles.style_box}>  
-                    <Text style={styles.style_title}>5</Text>
-                    <Text>Rifas Pendientes</Text>
+                    <Text style={styles.style_title}>{numBookedTickets}</Text>
+                    <Text>Rifas Vendidas</Text>
                 </View>
                 <View style={styles.style_box}>
-                    <Text style={styles.style_title}>25</Text>
+                    <Text style={styles.style_title}>{numRemainTickets}</Text>
                     <Text>
-                        Rifas Vendidas
+                        Rifas Pendientes
                     </Text>
                 </View>
             </View>
@@ -45,7 +60,7 @@ export default function Home({navigation}) {
                 </View>
             </View>
             <View style={{marginTop : 15}}>
-                <Text style={{fontWeight : 'bold', fontSize : 22}}>Rifas Pendientes (0) </Text>
+                <Text style={{fontWeight : 'bold', fontSize : 17}}>Rifas Pendientes (0) </Text>
                 <View>
                     {
                         tickets_pending.length > 0 ?
@@ -71,8 +86,6 @@ const styles = StyleSheet.create({
     container:{
         flex : 1,
         backgroundColor : "#FFFFFF",
-        marginTop : Constants.statusBarHeight,
-        paddingTop : 10,
         display : 'flex',
         flexDirection : 'column',
         paddingHorizontal : 15

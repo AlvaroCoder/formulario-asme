@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 export default function SelectedRifa({navigation, route}) {
     const number_ticket_database = 3072;
@@ -29,10 +29,15 @@ export default function SelectedRifa({navigation, route}) {
             <Text style={{fontWeight : 'bold', fontSize : 20}}>Numero de rifas seleccionadas</Text>
             {
                 listTickets.length > 0?
-                <View style={{}}>
-                    {
-                        listTickets.map((item, key)=>(<Text key={key}>Nro {item.number}</Text>))
-                    }
+                <View style={{display : 'flex', flexDirection : 'row', alignItems :'center', height : 60}}>
+                    <ScrollView
+                        style={{paddingVertical : 2}}
+                        horizontal
+                    >
+                        {
+                            listTickets.map((item, key)=>(<View  key={key} style={{padding : 10, borderRadius : 10, backgroundColor : "#095097", marginRight : 5 }}><Text style={{color : "#FFF"}}>Nro {item.number}</Text></View>))
+                        }
+                    </ScrollView>
                 </View>:
                 <View style={{}}>
                     <Text>No hay rifas por vender</Text>
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
     },
     container_box : {
         width : "100%",
-        height : "70%", 
+        height : "60%", 
         borderWidth : 1,
         borderColor : "#6D6D6D",
         borderRadius : 10,

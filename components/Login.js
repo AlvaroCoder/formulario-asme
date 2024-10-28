@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { AuthContext } from '../context/useAuthentication';
 export default function Login() {
+  const {signIn} = useContext(AuthContext)
   const URL_IMAGEN_LOGO = "https://res.cloudinary.com/dabyqnijl/image/upload/v1729831966/agpocw2m8hcwpe8xufey.png"
   const [DNI, setDNI] = useState('');
-  const handleLogin=()=>{
+  const handleLogin=async()=>{
+    await signIn(String(DNI));
 
   }
   return (

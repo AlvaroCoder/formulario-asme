@@ -1,3 +1,8 @@
 import { createContext } from "react";
 
-const contextAuthentication = createContext()
+const AuthContext = createContext({
+    signIn : ()=>{},
+    signOut:()=>{},
+    signUp:()=>{}
+});
+export {AuthContext}
