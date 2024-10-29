@@ -1,40 +1,50 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/useAuthentication';
-import { getBookedTicketsHome, getRemainTicketsHome } from '../conexion/apiConexion';
+import { getAvailablesTicketsHome, getBookedTicketsHome, getPendingTicketsHome, getRemainTicketsHome, getSoldOutTicketsHome } from '../conexion/apiConexion';
+import CardCollapsable from './elements/CardCollapsable';
+
 
 export default function Home({navigation}) {
     const {userToken} = useContext(AuthContext);        
     
     const user=userToken && JSON.parse(userToken) ;
-    const [numBookedTickets, setNumBookedTickets] = useState(0);
-    const [numRemainTickets, setNumRemainTickets] = useState(0);
+    
+    const [availableTickets, setAvailableTickets] = useState([]);
+    const [numAvailableTickets, setNumAvailableTickets] = useState(0);
+
     const [lastNumSoldOut, setLastNumSoldOut] = useState(0);
     const [numReservateTickets, setNumReservateTickets] = useState(0);
-    
-    const [remainTickets, setRemainTickets] = useState([]);
+    const [numSoldOutTicket, setNumSoldOutTicket] = useState(0);
 
-
+    const [ticketsPending, setTicketsPending] = useState([])
     useEffect(()=>{
         async function getDataHome() {
             const responseBookedTickets = await getBookedTicketsHome(user?.id_user);
             const responseBookedJSON = await responseBookedTickets.json();
-            setNumBookedTickets(responseBookedJSON?.tickets_data?.amount);
+            setNumReservateTickets(responseBookedJSON?.tickets_data?.amount);
             
-            const responseRemainTickets = await getRemainTicketsHome(user?.id_user);
-            const responseRemainJSON = await responseRemainTickets.json();
-            setNumRemainTickets(responseRemainJSON?.amount?.amount);
+            const responseAvailableTickets = await getAvailablesTicketsHome(user?.id_user);
+            const responseAvailableTicketsJSON = await responseAvailableTickets.json();
+            setNumAvailableTickets(responseAvailableTicketsJSON?.tickets_data?.amount);
+            setAvailableTickets(responseAvailableTicketsJSON?.tickets_data?.tickets);
 
-            setRemainTickets(responseRemainJSON?.amount?.tickets);
+            const responseSoldOutTicket = await getSoldOutTicketsHome(user?.id_user);
+            const responseSoldOutTicketJSON = await responseSoldOutTicket.json();
+            setNumSoldOutTicket(responseSoldOutTicketJSON?.amount?.amount);
+
+            const responsePendingTickets = await getPendingTicketsHome(user?.id_user);
+            const responsePendingTicketsJSON = await responsePendingTickets.json();
+            setTicketsPending(responsePendingTicketsJSON?.tickets_data?.tickets);
+
         }
         getDataHome();
     },[userToken])
 
-    const tickets_pending=[];
-
     const handleClick =()=>{
-        const first_num_ticket = parseInt(remainTickets[0]?.number_ticket);
-        const id_ticket = remainTickets[0]?.id_ticket
+        // Indica el inicio del numero de la rifa en la pagina selected Rifa
+        const first_num_ticket = parseInt(availableTickets[0]?.number_ticket);
+        const id_ticket = availableTickets[0]?.id_ticket
         
         navigation.navigate("SelectedRifa", {num_ticket_start : first_num_ticket, id_ticket_start :id_ticket , id_user : user?.id_user, user_name : `${user?.first_name} ${user?.last_name}`});
 
@@ -49,39 +59,58 @@ export default function Home({navigation}) {
                 <Text style={{fontWeight : 'bold', fontSize : 17, marginTop : 15}}>Información de Rifas</Text>
             </View>
             <View style={{...styles.style_container_box}} >
-                <View style={styles.style_box}>  
-                    <Text style={styles.style_title}>{numBookedTickets}</Text>
+                <TouchableOpacity style={styles.style_box} onPress={()=>navigation.navigate('TicketsSoldOut',{id_user : user?.id_user})}>  
+                    <Text style={styles.style_title}>{numSoldOutTicket}</Text>
                     <Text>Rifas Vendidas</Text>
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={()=>navigation.navigate('TicketsAvailable', {id_user : user?.id_user})} style={styles.style_box}>
-                    <Text style={styles.style_title}>{numRemainTickets}</Text>
+                    <Text style={styles.style_title}>{numAvailableTickets}</Text>
                     <Text>
                         Rifas Disponibles
                     </Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.style_container_box}>
-                <View style={styles.style_box}>
+                <TouchableOpacity style={styles.style_box}  onPress={()=>navigation.navigate('LastTicketSold', {id_user : user?.id_user})}>
                     <Text style={styles.style_title}>{lastNumSoldOut}</Text>
                     <Text>
                         Último Nro Vendido
                     </Text>
-                </View>
-                <View style={styles.style_box}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.style_box} onPress={()=>navigation.navigate('TicketsBooked', {id_user : user?.id_user})} >
                     <Text style={styles.style_title} >{numReservateTickets}</Text>
                     <Text>
                         Rifas Reservadas
                     </Text>
-                </View>
+                </TouchableOpacity>
             </View>
             <View style={{marginTop : 15}}>
-                <Text style={{fontWeight : 'bold', fontSize : 17}}>Rifas Pendientes (0) </Text>
-                <View>
+                <Text style={{fontWeight : 'bold', fontSize : 17}}>Rifas Pendientes de Revision ({ticketsPending.length}) </Text>
+                <View style={{width:"100%", height:300}}>
                     {
-                        tickets_pending.length > 0 ?
-                        <View>
-                            <Text>Si hay data</Text>
-                        </View> : 
+                        ticketsPending.length > 0 ?
+                        <ScrollView style={{width:"100%", height:"100%", padding:5}}>
+                            {
+                                ticketsPending.map((item, key)=>{
+                                    return(
+                                       <TouchableOpacity 
+                                       key={key} 
+                                       style={{height :  60, borderBottomWidth : 1, borderColor :"#6D6D6D", display : 'flex', flexDirection : 'row', alignItems : 'center'}}
+                                       onPress={()=>navigation.navigate("TicketDetail",{...item})}>
+                                            <View>
+                                                <Text style={{fontSize : 15}}>Ticket Pendiente</Text>
+                                                <Text style={{fontWeight :"bold", fontSize : 20}}>Nro {item?.number_ticket}</Text>
+                                            </View>
+                                            <View>
+                                                <TouchableOpacity>
+                                                    <Text>Check</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                       </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </ScrollView> : 
                         <View style={{width : "100%", borderRadius : 10, height : 100, borderWidth : 1, borderStyle :'dashed', borderColor : "#6D6D6D", display : 'flex', justifyContent :'center', alignItems : 'center', marginTop : 10}}>
                             <Text style={{textAlign : 'center', fontWeight : 'bold'}}>No hay rifas Pendientes</Text>
                         </View>

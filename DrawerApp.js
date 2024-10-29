@@ -20,10 +20,10 @@ export default function DrawerApp() {
                 title : "Inicio",
                 headerTitle : ()=>{
                     return(
-                        <View style={{flex : 1, alignItems : 'center', justifyContent:'center'}}>
+                        <View style={{flex : 1, paddingTop:5, alignItems : 'center', justifyContent:'center'}}>
                             <Image
-                                height={50}
-                                width={250}
+                                height={40}
+                                width={230}
                                 source={{
                                     uri : URL_IMAGEN_LOGO
                                 }}
