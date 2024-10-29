@@ -1,16 +1,32 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { getQrLinkFormUser } from '../conexion/qrConexion';
 export default function SelectedRifa({navigation, route}) {
-    const number_ticket_database = 3072;
+    const number_ticket_database = route?.params?.num_ticket_start;
+    const idTicket_start = route?.params?.id_ticket_start
+    const id_user = route?.params?.id_user
+    const username = route?.params?.user_name;
+
     const [listTickets, setListTickets] = useState([
         {number : String(number_ticket_database) }
     ]);
     const handleChangeInputRifas=(text)=>{
-        const list_tickets =Array.from({length : text}).map((_, idx)=>({number : number_ticket_database+idx+1}))
+        const list_tickets =Array.from({length : text}).map((_, idx)=>({number : number_ticket_database+idx+1, id_ticket : idTicket_start+idx+1}))
         setListTickets(list_tickets);
     }
-    const handleClickShowForm=()=>{
-        navigation.navigate("RifaSuccess", { listTickets })
+    const handleClickShowForm=async()=>{
+        const newListTickets = listTickets.map((item)=>({id_ticket : item.id_ticket ,number_ticket:String(item?.number)}))
+        const jsonToSend= {
+            tickets_data : newListTickets,
+            seller : username
+        }
+        console.log(jsonToSend);
+        
+        const response = await getQrLinkFormUser(jsonToSend);
+        const responseJSON = await response.json();     
+        console.log(responseJSON);
+        
+        navigation.navigate("RifaSuccess", { listTickets, url_form : responseJSON?.link, image_qr : responseJSON?.qr })
     }
   return (
     <View style={styles.container}>
@@ -39,7 +55,7 @@ export default function SelectedRifa({navigation, route}) {
                         }
                     </ScrollView>
                 </View>:
-                <View style={{}}>
+                <View style={{height:60, display:'flex', justifyContent:'center'}}>
                     <Text>No hay rifas por vender</Text>
                 </View>
             }

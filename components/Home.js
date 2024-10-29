@@ -9,6 +9,11 @@ export default function Home({navigation}) {
     const user=userToken && JSON.parse(userToken) ;
     const [numBookedTickets, setNumBookedTickets] = useState(0);
     const [numRemainTickets, setNumRemainTickets] = useState(0);
+    const [lastNumSoldOut, setLastNumSoldOut] = useState(0);
+    const [numReservateTickets, setNumReservateTickets] = useState(0);
+    
+    const [remainTickets, setRemainTickets] = useState([]);
+
 
     useEffect(()=>{
         async function getDataHome() {
@@ -19,7 +24,8 @@ export default function Home({navigation}) {
             const responseRemainTickets = await getRemainTicketsHome(user?.id_user);
             const responseRemainJSON = await responseRemainTickets.json();
             setNumRemainTickets(responseRemainJSON?.amount?.amount);
-            
+
+            setRemainTickets(responseRemainJSON?.amount?.tickets);
         }
         getDataHome();
     },[userToken])
@@ -27,13 +33,16 @@ export default function Home({navigation}) {
     const tickets_pending=[];
 
     const handleClick =()=>{
-        navigation.navigate("SelectedRifa", {name : "Alvaro"});
+        const first_num_ticket = parseInt(remainTickets[0]?.number_ticket);
+        const id_ticket = remainTickets[0]?.id_ticket
+        
+        navigation.navigate("SelectedRifa", {num_ticket_start : first_num_ticket, id_ticket_start :id_ticket , id_user : user?.id_user, user_name : `${user?.first_name} ${user?.last_name}`});
 
     }
     return (
         <View style={styles.container} >
             <View style={{display:'flex', flexDirection : 'column', marginTop : 15}} >
-                <Text style={{...styles.style_title, }}>Bienvenido {user?.first_name}</Text>
+                <Text style={{...styles.style_title, }}>Bienvenido {user?.first_name} {user?.last_name}</Text>
                 <Text style={{ fontWeight : 'bold', color : "#FFFF", backgroundColor : "#084F96", borderRadius : 12, padding:2, width:90, textAlign:'center'}}>{user?.area_name}</Text>
             </View>
             <View>
@@ -44,18 +53,24 @@ export default function Home({navigation}) {
                     <Text style={styles.style_title}>{numBookedTickets}</Text>
                     <Text>Rifas Vendidas</Text>
                 </View>
-                <View style={styles.style_box}>
+                <TouchableOpacity onPress={()=>navigation.navigate('TicketsAvailable', {id_user : user?.id_user})} style={styles.style_box}>
                     <Text style={styles.style_title}>{numRemainTickets}</Text>
                     <Text>
-                        Rifas Pendientes
+                        Rifas Disponibles
                     </Text>
-                </View>
+                </TouchableOpacity>
             </View>
             <View style={styles.style_container_box}>
                 <View style={styles.style_box}>
-                    <Text style={styles.style_title}>3730</Text>
+                    <Text style={styles.style_title}>{lastNumSoldOut}</Text>
                     <Text>
                         Último Nro Vendido
+                    </Text>
+                </View>
+                <View style={styles.style_box}>
+                    <Text style={styles.style_title} >{numReservateTickets}</Text>
+                    <Text>
+                        Rifas Reservadas
                     </Text>
                 </View>
             </View>

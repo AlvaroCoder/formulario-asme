@@ -1,14 +1,31 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Share, SafeAreaView } from 'react-native'
 import React from 'react'
 import Constants from "expo-constants";
+import QRCode from "react-native-qrcode-svg"
 export default function RifaSuccess({navigation, route}) {
-    const URL_IMG_QR = "https://res.cloudinary.com/dabyqnijl/image/upload/v1729954834/yriza59n7fu2qtocynbh.png";
+    const URL_IMG_QR = route?.params?.image_qr;
+    const URL_FORM = route?.params?.url_form
+
     const handleClickReturnHome=()=>{
         navigation.navigate("Home");
     }
     const handleClickShareButton=async()=>{
       try {
-        
+        const result = await Share.share({
+          message : `Gracias por tu apoyo. Por favor completa este formulario para continuar con la compra 😃. \n ${URL_FORM}`,
+          title:"Que de codigo formulario",
+          
+        });
+
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
         
       } catch (err) {
         console.log('Error', err);
@@ -16,8 +33,8 @@ export default function RifaSuccess({navigation, route}) {
       }
     }
     return (
-    <View style={styles.container}>
-      <Text style={styles.style_title}>Rifas Vendidas</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={{...styles.style_title, marginTop:20}}>Rifas Vendidas</Text>
       <View style={{display:'flex', flexDirection:'row', alignItems :'center', height:60}}>
         <ScrollView
           horizontal
@@ -31,12 +48,9 @@ export default function RifaSuccess({navigation, route}) {
         Formulario de Registro
       </Text>
       <View style={styles.container_box}>
-        <Image
-            source={{
-                uri : URL_IMG_QR,
-                height : 350,
-                width :350
-            }}
+        <QRCode
+          value={URL_FORM}
+          size={300}
         />
       </View>
       <TouchableOpacity style={styles.style_button} onPress={handleClickShareButton}>
@@ -48,7 +62,7 @@ export default function RifaSuccess({navigation, route}) {
       <View style={styles.style_footer}>
         <Text style={{textAlign : 'center'}}>@2024 COSAI Brand. Todos los derechos reservados.</Text>
       </View>
-    </View>
+    </SafeAreaView>
   )
 };
 
@@ -66,7 +80,7 @@ const styles = StyleSheet.create({
     },
     container_box : {
         width : "100%",
-        height : "60%", 
+        height : "50%", 
         borderWidth : 1,
         borderColor : "#6D6D6D",
         borderRadius : 10,

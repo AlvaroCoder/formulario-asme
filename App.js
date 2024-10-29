@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, Login, RifaSuccess, SelectedRifa } from './components';
+import { Home, Login, RifaSuccess, SelectedRifa, TicketsAvailable } from './components';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from './context/useAuthentication';
@@ -105,6 +105,11 @@ export default function Page({ navigation }) {
                       name='RifaSuccess'
                       component={RifaSuccess}
                       options={{headerShown : false}}
+                  />
+                  <Stack.Screen
+                    name='TicketsAvailable'
+                    component={TicketsAvailable}
+                    options={{title : "Tickets"}}
                   />
                 </Stack.Navigator>
                 : 
