@@ -6,6 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from './context/useAuthentication';
 import { loginPostUser } from './conexion/apiConexion';
 import DrawerNavigator from './DrawerApp';
+import { Alert } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -64,8 +65,12 @@ export default function Page({ navigation }) {
       signIn : async (data)=>{
         const response = await loginPostUser(data);
         const responseJSON = await response.json();
-        console.log(responseJSON['user_data']);
-        
+                
+        if (!response.ok) {
+          Alert.alert("Error","Problemas de conexion");
+          return
+        }
+
         await SecureStore.setItemAsync('userToken', JSON.stringify(responseJSON['user_data']));
         
         dispatch({type : 'SIGN_IN', token : JSON.stringify(responseJSON['user_data'])});
