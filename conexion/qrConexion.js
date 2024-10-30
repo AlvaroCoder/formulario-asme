@@ -1,4 +1,4 @@
-const BASE_URL = "http://172.20.29.95:8000"
+const BASE_URL = "https://asme-backend-broken-voice-4721.fly.dev"
 
 export async function getQrLinkFormUser(data) {
     return fetch(`${BASE_URL}/home/qr_section`,{
@@ -7,5 +7,15 @@ export async function getQrLinkFormUser(data) {
             "Content-Type":"application/json"
         },
         body :JSON.stringify(data)
+    })
+}
+
+export async function updateStatusTicketSold(data) {
+    return fetch(`${BASE_URL}/home/confirm_ticket_sale/`,{
+        method : 'PUT',
+        headers : {
+            "Content-Type":"application/json"
+        },
+        body : JSON.stringify(data)
     })
 }

@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, Login, RifaSuccess, SelectedRifa, TicketDetail, TicketsAvailable, TicketsBooked, TicketsSold, TicketsSoldLast } from './components';
+import { Home, Login, RifaSuccess, SelectedRifa, TicketDetail, TicketDetailSold, TicketsAvailable, TicketsBooked, TicketsSold, TicketsSoldLast } from './components';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from './context/useAuthentication';
@@ -130,6 +130,11 @@ export default function Page({ navigation }) {
                     name='TicketDetail'
                     component={TicketDetail}
                     options={{title : "Detalle del ticket"}}
+                  />
+                  <Stack.Screen
+                    name='TicketDetailSold'
+                    component={TicketDetailSold}
+                    options={{title : "Ticket Vendido"}}
                   />
                 </Stack.Navigator>
                 : 

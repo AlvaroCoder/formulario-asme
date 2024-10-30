@@ -1,38 +1,46 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getQrLinkFormUser } from '../conexion/qrConexion';
+import { getAvailablesTicketsHome } from '../conexion/apiConexion';
 export default function SelectedRifa({navigation, route}) {
     const number_ticket_database = route?.params?.num_ticket_start;
-    const idTicket_start = route?.params?.id_ticket_start
     const id_user = route?.params?.id_user
     const username = route?.params?.user_name;
 
-    const [listTickets, setListTickets] = useState([
-        {number : String(number_ticket_database) }
-    ]);
+    const [availableTickets, setAvailableTickets] = useState([]);
+
+    useEffect(()=>{
+        async function getAvailableTicketsForUser() {
+            const response = await getAvailablesTicketsHome(id_user);
+            const responseJSON = await response.json();
+            setAvailableTickets(responseJSON?.tickets_data?.tickets);
+        }   
+        getAvailableTicketsForUser();
+    },[]);
+
+    const [listTickets, setListTickets] = useState([]);
     const handleChangeInputRifas=(text)=>{
-        const list_tickets =Array.from({length : text}).map((_, idx)=>({number : number_ticket_database+idx+1, id_ticket : idTicket_start+idx+1}))
-        setListTickets(list_tickets);
+        const lista_new = availableTickets.slice(0, parseInt(text));
+        
+        setListTickets(lista_new);
     }
     const handleClickShowForm=async()=>{
-        const newListTickets = listTickets.map((item)=>({id_ticket : item.id_ticket ,number_ticket:String(item?.number)}))
+        const newListTickets = listTickets.map((item)=>({id_ticket : item.id_ticket ,number_ticket:String(item?.number_ticket)}))
         const jsonToSend= {
             tickets_data : newListTickets,
             seller : username
         }
-        console.log(jsonToSend);
         
         const response = await getQrLinkFormUser(jsonToSend);
         const responseJSON = await response.json();     
-        console.log(responseJSON);
         
         navigation.navigate("RifaSuccess", { listTickets, url_form : responseJSON?.link, image_qr : responseJSON?.qr })
     }
   return (
     <View style={styles.container}>
         <View>
-            <Text style={{fontWeight : 'bold', fontSize : 20}}>
-                Cantidad de rifas Vendidas
+            <Text style={{fontWeight : 'bold', fontSize : 20, marginVertical : 10}}>
+                Cantidad de rifas Seleccionadas
             </Text>
             <TextInput
                 keyboardType='numeric'
@@ -51,7 +59,7 @@ export default function SelectedRifa({navigation, route}) {
                         horizontal
                     >
                         {
-                            listTickets.map((item, key)=>(<View  key={key} style={{padding : 10, borderRadius : 10, backgroundColor : "#095097", marginRight : 5 }}><Text style={{color : "#FFF"}}>Nro {item.number}</Text></View>))
+                            listTickets.map((item, key)=>(<View  key={key} style={{padding : 10, borderRadius : 10, backgroundColor : "#095097", marginRight : 5 }}><Text style={{color : "#FFF"}}>Nro {item.number_ticket}</Text></View>))
                         }
                     </ScrollView>
                 </View>:

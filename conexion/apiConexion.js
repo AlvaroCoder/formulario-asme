@@ -1,4 +1,4 @@
-const BASE_URL = "http://172.20.29.95:8000"
+const BASE_URL = "https://asme-backend-broken-voice-4721.fly.dev"
 export async function  loginPostUser(dni="") {
     return await fetch(`${BASE_URL}/login`,{
         method : 'POST',
@@ -34,8 +34,8 @@ export async function getAvailablesTicketsHome(id_user=1) {
         method : 'GET'
     })
 }
-export async function getLastTicketsHome(id_user=1) {
-    return await fetch(`${BASE_URL}/home/last_booked_ticket/?id=${id_user}`,{
+export async function getLastTicketSoldHome(id_user=1) {
+    return await fetch(`${BASE_URL}/home/last_sold_ticket/?id_user=${id_user}`,{
         method : 'GET'
     })
 }

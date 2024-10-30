@@ -4,6 +4,8 @@ import { AuthContext } from '../context/useAuthentication';
 export default function Login() {
   const {signIn} = useContext(AuthContext)
   const URL_IMAGEN_LOGO = "https://res.cloudinary.com/dabyqnijl/image/upload/v1729831966/agpocw2m8hcwpe8xufey.png"
+  const LOGO_COSAI = "https://res.cloudinary.com/dabyqnijl/image/upload/v1730248449/et35vyu58u7ipt0um69z.png"
+
   const [DNI, setDNI] = useState('');
   const handleLogin=async()=>{
     await signIn(String(DNI));
@@ -28,6 +30,14 @@ export default function Login() {
           <Text style={styles.buttonText}>Inicia Sesión</Text>
         </TouchableOpacity>
       </View>
+      <Image
+        style={{marginTop :50}}
+        source={{
+          uri : LOGO_COSAI
+        }}
+        width={300}
+        height={80}
+      />
     </View>
   );
 }

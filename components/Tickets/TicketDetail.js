@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { updateStatusTicketSold } from '../../conexion/qrConexion';
 
 export default function TicketDetail({navigation, route}) {
     const {
@@ -13,6 +14,24 @@ export default function TicketDetail({navigation, route}) {
         booking_time,
         evidence
     } = route?.params;
+    const [loading, setLoading] = useState(false);
+
+    const handleClickConfirmTicket=async()=>{
+        const dataToSend={
+            id_ticket,
+            confirm : true
+        }
+        
+        setLoading(true);
+        const response = await updateStatusTicketSold(dataToSend);
+        if (!response.ok) {
+            Alert.alert("Error", "Algo salio mal")
+            return;
+        }
+        Alert.alert("Exito","Compra confirmada")
+        navigation.navigate("Home");
+        setLoading(false); 
+    }
   return (
     <View>
         <View style={styles.container}>
@@ -28,12 +47,18 @@ export default function TicketDetail({navigation, route}) {
         )}
         </View>
        <View style={{width : "100%", height:60, paddingHorizontal:10}}>
-        <TouchableOpacity style={{backgroundColor :"#084F96", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}}>
-            <Text style={{color : "#FFF", fontWeight:'bold'}}>Confirmar Pago</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{marginTop : 10, borderWidth :1, borderColor :"#6D6D6D", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}}>
-            <Text style={{fontWeight:'bold'}}>Rechazar Pago</Text>
-        </TouchableOpacity>
+            {   
+            !loading ?
+                <>
+                    <TouchableOpacity style={{backgroundColor :"#084F96", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}} onPress={handleClickConfirmTicket}>
+                        <Text style={{color : "#FFF", fontWeight:'bold'}}>Confirmar Pago</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{marginTop : 10, borderWidth :1, borderColor :"#6D6D6D", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}}>
+                        <Text style={{fontWeight:'bold'}}>Rechazar Pago</Text>
+                    </TouchableOpacity>
+                </>:
+                <ActivityIndicator></ActivityIndicator>
+            }
        </View>
     </View>
   );

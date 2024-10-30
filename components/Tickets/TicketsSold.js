@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getSoldOutTicketsHome } from '../../conexion/apiConexion';
 import { stylesTickets } from '../../styles/tickets';
@@ -40,14 +40,20 @@ export default function TicketsSold({navigation, route}) {
                     {
                         soldOutTickets.map((item, key)=>{
                             return(
-                                <View key={key}>
+                                <TouchableOpacity 
+                                key={key} 
+                                style={{paddingLeft : 10, marginBottom : 10,height :  110, borderBottomWidth : 1, borderColor :"#6D6D6D", display : 'flex', flexDirection : 'column'}}
+                                onPress={()=>navigation.navigate("TicketDetailSold",{...item})}>
                                     <View>
-                                        <Text>Tickets de Venta</Text>
-                                        <Text>Nro </Text>
-                                        <Text>Cliente : </Text>
+                                        <Text style={{fontWeight :"bold", fontSize : 20}}>Nro {item?.number_ticket}</Text>
                                     </View>
-                                    <View style={{height :20}}></View>
-                                </View>
+                                    <View style={{marginTop:10}}>
+                                        <Text>Comprador : <Text style={{fontWeight :'bold'}}>{item?.first_name} {item?.last_name}</Text></Text>
+                                        <Text>Email : <Text style={{fontWeight :'bold'}}>{item?.email} </Text></Text>
+                                        <Text>Telefono : <Text style={{fontWeight :'bold'}}>{item?.cell_phone} </Text></Text>
+
+                                    </View>
+                               </TouchableOpacity>
                             )
                         })
                     }

@@ -9,3 +9,4 @@ export {default as TicketsSold} from "./Tickets/TicketsSold";
 export {default as TicketsBooked} from "./Tickets/TicketsBooked";
 export {default as TicketsSoldLast} from "./Tickets/TicketsSoldLast";
 export {default as TicketDetail} from "./Tickets/TicketDetail";
+export {default as TicketDetailSold} from "./Tickets/TicketDetailSold";

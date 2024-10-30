@@ -40,7 +40,7 @@ export default function RifaSuccess({navigation, route}) {
           horizontal
         >
           {
-              route?.params?.listTickets?.map((item, key)=><View key={key} style={{padding:10, borderRadius : 10, backgroundColor : "#095097", marginRight : 5}}><Text style={{color : "#FFF", fontWeight : 'bold'}} >Nro {item.number}</Text></View>)
+              route?.params?.listTickets?.map((item, key)=><View key={key} style={{padding:10, borderRadius : 10, backgroundColor : "#095097", marginRight : 5}}><Text style={{color : "#FFF", fontWeight : 'bold'}} >Nro {item.number_ticket}</Text></View>)
           }
         </ScrollView>
       </View>
