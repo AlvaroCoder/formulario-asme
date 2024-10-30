@@ -32,6 +32,21 @@ export default function TicketDetail({navigation, route}) {
         navigation.navigate("Home");
         setLoading(false); 
     }
+    const handleClickCancelTicket=async()=>{
+      const dataToSend={  
+        id_ticket,
+        confirm  : false
+      }
+      setLoading(true);
+      const response = await updateStatusTicketSold(dataToSend);
+      if (!response.ok) {
+        Alert.alert("Error","Algo salio mal");
+        return;
+      }
+      Alert.alert("Exito","Compra cancelada");
+      navigation.navigate("Home");
+      setLoading(false);
+    }
   return (
     <View>
         <View style={styles.container}>
@@ -50,10 +65,14 @@ export default function TicketDetail({navigation, route}) {
             {   
             !loading ?
                 <>
-                    <TouchableOpacity style={{backgroundColor :"#084F96", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}} onPress={handleClickConfirmTicket}>
+                    <TouchableOpacity 
+                    style={{backgroundColor :"#084F96", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}} 
+                    onPress={handleClickConfirmTicket}>
                         <Text style={{color : "#FFF", fontWeight:'bold'}}>Confirmar Pago</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{marginTop : 10, borderWidth :1, borderColor :"#6D6D6D", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}}>
+                    <TouchableOpacity 
+                    style={{marginTop : 10, borderWidth :1, borderColor :"#6D6D6D", borderRadius : 10, height :"100%", justifyContent :"center", alignItems:'center'}}
+                     onPress={handleClickCancelTicket}>
                         <Text style={{fontWeight:'bold'}}>Rechazar Pago</Text>
                     </TouchableOpacity>
                 </>:
