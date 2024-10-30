@@ -8,12 +8,15 @@ import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from './context/useAuthentication';
 import { loginPostUser } from './conexion/apiConexion';
 import DrawerNavigator from './DrawerApp';
-import { Alert } from 'react-native';
+import { Alert, Image } from 'react-native';
+import { View } from "react-native-reanimated/lib/typescript/Animated";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
 
 export default function Page({ navigation }) {
+  const URL_IMAGEN_LOGO = "https://res.cloudinary.com/dabyqnijl/image/upload/v1729831966/agpocw2m8hcwpe8xufey.png";
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -100,9 +103,24 @@ export default function Page({ navigation }) {
                 state.userToken != null ?
                 <Stack.Navigator>
                   <Stack.Screen
-                    name='Main'
-                    component={DrawerNavigator}
-                    options={{headerShown : false}}
+                    name='Home'
+                    component={Home}
+                    options={{
+                      title : "Inicio",
+                      headerTitle :()=>{
+                        return (
+                          <View style={{flex : 1, paddingTop:5, alignItems : 'center', justifyContent:'center'}}>
+                            <Image
+                            height={40}
+                            width={230}
+                              source={{
+                                uri :URL_IMAGEN_LOGO
+                              }}
+                            />
+                          </View>
+                        )
+                      }
+                    }}
                   />
                   <Stack.Screen
                       name='SelectedRifa'
