@@ -1,3 +1,5 @@
+import "react-native-gesture-handler"
+import {enableScreens} from "react-native-screens"
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Home, Login, RifaSuccess, SelectedRifa, TicketDetail, TicketDetailSold, TicketsAvailable, TicketsBooked, TicketsSold, TicketsSoldLast } from './components';
@@ -8,6 +10,7 @@ import { loginPostUser } from './conexion/apiConexion';
 import DrawerNavigator from './DrawerApp';
 import { Alert } from 'react-native';
 
+enableScreens();
 const Stack = createNativeStackNavigator();
 
 export default function Page({ navigation }) {
